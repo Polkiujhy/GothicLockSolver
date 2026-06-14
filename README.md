@@ -30,9 +30,13 @@ Current backends:
 
 - Hyprland via `hyprctl`
 - X11 via `xdotool`
+- Windows via native Win32 APIs and Pillow `ImageGrab`
 - print/no-op backend for dry runs
 
-Future KDE Plasma or Windows support should be added there behind the same backend interface.
+Future KDE Plasma support should be added there behind the same backend interface.
+
+On Windows, install `requirements.txt` in a normal Python environment. The TUI
+uses `windows-curses`; the CLI path does not need a separate terminal UI package.
 
 ## Tests
 
@@ -41,4 +45,3 @@ python -m pytest -q
 ```
 
 The tests cover pure solver behavior and scanner candidate ordering. They do not require the game window.
-

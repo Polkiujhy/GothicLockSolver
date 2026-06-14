@@ -9,7 +9,7 @@ import time
 from pathlib import Path
 
 from gothic_lock.desktop import (
-    active_window_region,
+    backend_names,
     capture_screenshot,
     selected_backend,
     send_keys,
@@ -44,7 +44,7 @@ def main() -> int:
     parser.add_argument("--pins", help="Manual pin override, e.g. 7,6,6,1,2,1. Skips screenshot detection.")
     parser.add_argument("--image", help="Use an existing screenshot instead of capturing the current screen")
     parser.add_argument("--capture-delay", type=float, default=0.0, help="Wait this many seconds before live screenshot capture")
-    parser.add_argument("--capture-region", help='grim region, e.g. "100,100 900x700"')
+    parser.add_argument("--capture-region", help='Capture region, e.g. "100,100 900x700" or "100,100,900,700"')
     parser.add_argument("--roi", help="Detection ROI as screen fractions: left,top,right,bottom. Default: 0.50,0.12,0.98,0.62")
     parser.add_argument("--debug-image", help="Write an annotated detection image")
     parser.add_argument("--holes", type=int, default=7)
@@ -54,7 +54,7 @@ def main() -> int:
     parser.add_argument("--prev-key", default="w", help="Key that moves selection to the previous plate number")
     parser.add_argument("--left-key", default="a")
     parser.add_argument("--right-key", default="d")
-    parser.add_argument("--backend", choices=("print", "hyprctl", "xdotool"), default="print")
+    parser.add_argument("--backend", choices=backend_names(), default="print")
     parser.add_argument("--execute", action="store_true", help="Actually send keys; without this, only prints")
     parser.add_argument("--countdown", type=float, default=3.0)
     parser.add_argument("--delay", type=float, default=0.08)
@@ -106,7 +106,7 @@ def main() -> int:
     if args.execute:
         backend = args.backend if args.backend != "print" else selected_backend()
         if backend == "print":
-            raise SystemExit("No key backend found. Install/use hyprctl or xdotool, or run without --execute.")
+            raise SystemExit("No key backend found. Use a supported desktop backend, or run without --execute.")
         print(f"Sending {len(keys)} keys via {backend} in {args.countdown:g}s. Focus the game window now.")
         time.sleep(args.countdown)
         send_keys(keys, backend, args.delay)

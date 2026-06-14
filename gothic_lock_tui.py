@@ -298,7 +298,7 @@ class LockTui(RuleScanLogic):
         try:
             backend = self.selected_backend()
             if backend == "print":
-                raise ValueError("No key backend found. Need hyprctl or xdotool for rule detection.")
+                raise ValueError("No key backend found. Need a supported desktop backend for rule detection.")
 
             curses.def_prog_mode()
             curses.endwin()
@@ -393,7 +393,7 @@ class LockTui(RuleScanLogic):
                 raise ValueError("Run Auto Rule Detection first.")
             backend = self.selected_backend()
             if backend == "print":
-                raise ValueError("No key backend found. Need hyprctl or xdotool to reset/home before solving.")
+                raise ValueError("No key backend found. Need a supported desktop backend to reset/home before solving.")
             count = self.plate_count or max(self.learned_rules)
 
             curses.def_prog_mode()
@@ -501,7 +501,7 @@ class LockTui(RuleScanLogic):
         try:
             backend = self.selected_backend()
             if backend == "print":
-                raise ValueError("No key backend found. Need hyprctl or xdotool for rule detection and solving.")
+                raise ValueError("No key backend found. Need a supported desktop backend for rule detection and solving.")
 
             curses.def_prog_mode()
             curses.endwin()
