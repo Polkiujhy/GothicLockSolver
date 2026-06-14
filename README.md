@@ -68,7 +68,7 @@ plate moves. That produces a key sequence ready to send to the game.
 
 ### 4. Input And Capture
 
-Desktop-specific work is isolated in `gothic_lock/desktop.py`.
+Desktop-specific work is isolated behind `gothic_lock/desktop.py`.
 
 The rest of the scanner asks for simple operations:
 
@@ -82,7 +82,9 @@ behind the same backend interface.
 
 ## Desktop Backends
 
-Desktop-specific input/capture code lives in `gothic_lock/desktop.py`.
+`gothic_lock/desktop.py` is the stable wrapper used by the TUI, CLI, scanner,
+and solver. Desktop-specific input/capture code lives in
+`gothic_lock/desktop_backends/`, with one module per backend.
 
 Current backends:
 
@@ -91,7 +93,8 @@ Current backends:
 - Windows via native Win32 APIs and Pillow `ImageGrab`
 - print/no-op backend for dry runs
 
-Future KDE Plasma support should be added there behind the same backend interface.
+Future KDE Plasma support should be added as another backend module behind the
+same facade.
 
 On Windows, install `requirements.txt` in a normal Python environment. The TUI
 uses `windows-curses`; the CLI path does not need a separate terminal UI package.
