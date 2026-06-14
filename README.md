@@ -22,6 +22,64 @@ The TUI has four actions:
 3. Auto Solve
 4. Auto Detect + Solve
 
+## How It Works
+
+The lock is treated as a set of numbered plates. Each plate has one visible pin
+position from `1` to `7`; position `4` is the center target.
+
+### 1. Pin Detection
+
+The vision code captures the active game window and looks for two kinds of
+blobs inside the lock area:
+
+- dark hole blobs, used to infer plate rows and the seven hole positions,
+- brass pin blobs, used to determine the current pin position on each row.
+
+Rows are projected along the slanted lock angle, grouped into plates, and each
+brass pin is assigned to the closest detected row. OpenCV is used when
+available, with a pure-Python fallback kept for portability.
+
+### 2. Rule Detection
+
+The scanner learns rules by moving one selected plate at a time and comparing
+pin positions before and after the move.
+
+For every plate:
+
+- the selected plate always moves by one hole,
+- linked plates may move in the same direction,
+- linked plates may move in the opposite direction,
+- unlinked plates do not move.
+
+The scanner remembers unsafe edge moves that break lockpicks or produce no
+movement. If a pin is on hole `1` or `7`, it prefers moves that pull pins away
+from the edge. When known rules can safely create a better test position, the
+scanner uses them as helper moves, but it avoids undoing a useful setup before
+testing an unknown plate.
+
+### 3. Solving
+
+After rules are known, the solver runs a breadth-first search over pin states.
+It only accepts moves where every pin stays inside holes `1..7`. The goal state
+is all pins at `4`.
+
+The solver searches actual key cost, including plate selection keys, not only
+plate moves. That produces a key sequence ready to send to the game.
+
+### 4. Input And Capture
+
+Desktop-specific work is isolated in `gothic_lock/desktop.py`.
+
+The rest of the scanner asks for simple operations:
+
+- capture the active lock screen,
+- move selection to another plate,
+- press a plate movement key,
+- reset/home the lock.
+
+That is why Hyprland, X11, Windows, and future KDE Plasma support can live
+behind the same backend interface.
+
 ## Desktop Backends
 
 Desktop-specific input/capture code lives in `gothic_lock/desktop.py`.
